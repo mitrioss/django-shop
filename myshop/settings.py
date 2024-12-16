@@ -49,7 +49,7 @@ EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
-#следует ли использовать защищенное соединение транспортного слоя
+# следует ли использовать защищенное соединение транспортного слоя
 EMAIL_USE_TLS = True
 # следует ли использовать неявное защищенное соединение TLS.
 EMAIL_USE_SSL = False
@@ -58,14 +58,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 CART_SESSION_ID = 'cart'
 
 # Настроечные параметры Stripe
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51PIptXCcCcq46GGFtH07fVLuVzzIbaiuNfATDS15A9NvzCDKZZhVhtPC9Vyn7WT91cyCEERwLyDklZ1EqvVXe3qp00yuHVSA0I' # Публикуемый ключ
-STRIPE_SECRET_KEY = 'sk_test_51PIptXCcCcq46GGFYoKEzjplUR7C2veL76Fw7buxYJnbGHEwSgE7FmLDEqu1QdYRK3IFPddC5Vm8xIU5i3J1iuLm00xy6LPG4e' # Секретный ключ
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51PIptXCcCcq46GGFtH07fVLuVzzIbaiuNfATDS15A9NvzCDKZZhVhtPC9Vyn7WT91cyCEERwLyDklZ1EqvVXe3qp00yuHVSA0I'  # Публикуемый ключ
+STRIPE_SECRET_KEY = 'sk_test_51PIptXCcCcq46GGFYoKEzjplUR7C2veL76Fw7buxYJnbGHEwSgE7FmLDEqu1QdYRK3IFPddC5Vm8xIU5i3J1iuLm00xy6LPG4e'  # Секретный ключ
 STRIPE_API_VERSION = '2022-08-01'
 
-
 # Application definition
-LOGOUT_REDIRECT_URL = "/home"
-LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = '/'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -164,7 +163,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Папка, где находятся статические файлы для разработки
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

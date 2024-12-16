@@ -1,10 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.views import View
 from django.views.generic import TemplateView, ListView
 from .models import Customer, Category, Product
 from cart.forms import CartAddProductForm
 from orders.models import Order
 from .forms import ReviewForm
+from django.db.models import Avg
+from django.db.models.functions import Coalesce
+from django.db import models
+
 
 
 def product_detail(request, id, slug):
@@ -32,7 +37,6 @@ def product_detail(request, id, slug):
         'reviews': reviews,
         'review_form': review_form
     })
-
 
 def product_list(request, category_slug=None):
     category = None
@@ -63,8 +67,18 @@ def product_list(request, category_slug=None):
                    'products': products})
 
 
-class HomePageView(TemplateView):
-    template_name = 'index.html'
+class HomePageView(View):
+    def get(self, request, *args, **kwargs):
+        # Получаем продукты с аннотированным средним рейтингом и количеством отзывов
+        products = Product.objects.annotate(
+            average_rating=Coalesce(Avg('reviews__rating'), 0, output_field=models.FloatField()),
+            review_count=Count('reviews')
+        ).filter(average_rating__gt=0)  # Фильтруем только те продукты, у которых есть рейтинг
+
+        # Сортируем по среднему рейтингу и выбираем топ-3
+        top_products = products.order_by('-average_rating')[:3]
+
+        return render(request, 'index.html', {'products': top_products})
 
 
 class CustomersListView(ListView):
