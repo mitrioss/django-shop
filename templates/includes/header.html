@@ -49,21 +49,20 @@
                         <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
                     </a>
                     {% if user.is_authenticated %}
-                    <a class="nav-icon position-relative text-decoration-none" href="{% url 'user:profile' %}">{{
-                        user.username }}
-                        <form action="{% url 'logout' %}" method="post">
-                            {% csrf_token %}
-                            <button class='button1' type="submit">Выход</button>
-                        </form>
-                        {% else %}
-                        <div class="btn2">
-                            <a class='button2' href="{% url 'login' %}" style="
-    padding-right: 20px">Авторизация</a>
-                        </div>
-                        <div class="btn3">
-                            <a class='button3' href="{% url 'user:signup' %}">Регистрация</a>
-                        </div>
+                    <a class="nav-icon position-relative text-decoration-none" href="{% url 'user:profile' %}">
+                        {{ user.username }}
                     </a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class='button1' type="submit">Выход</button>
+                    </form>
+                    {% else %}
+                    <div class="btn2">
+                        <a class='button2' href="{% url 'login' %}" style="padding-right: 20px">Авторизация</a>
+                    </div>
+                    <div class="btn3">
+                        <a class='button3' href="{% url 'user:signup' %}">Регистрация</a>
+                    </div>
                     {% endif %}
                 </div>
             </div>

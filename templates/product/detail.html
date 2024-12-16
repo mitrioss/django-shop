@@ -1,47 +1,115 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}
 {{ product.name }}
 {% endblock %}
+
 {% block content %}
+<!-- Open Content -->
+<section class="bg-light">
+    <div class="container pb-5">
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-lg-5 mt-5">
+                <div class="card mb-3">
+                    <img class="card-img img-fluid"
+                         src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}"
+                         alt="{{ product.name }}" id="product-detail">
+                </div>
+            </div>
 
-<div class="product">
-    <div class="info-product">
-        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}">
-        <h1><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h1>
-        <h2>{{ product.name }}</h2>
-        {{ product.description|linebreaks }}
-        <p class="price">{{ product.price }} ₽</p>
-        <form action="{% url 'cart:cart_add' product.id %}" method="post">
-            {{ cart_product_form }}
-            {% csrf_token %}
-            <input class="button1" type="submit" value="Добавить в корзину">
-        </form>
-    </div>
-</div>
+            <!-- Product Details -->
+            <div class="col-lg-7 mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h2">{{ product.name }}</h1>
+                        <p class="h3 py-2">{{ product.price }} ₽</p>
+                        <p class="py-2">
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-secondary"></i>
+                            <span class="list-inline-item text-dark">Рейтинг {{ product.average_rating|floatformat:1 }} | {{ product.review_count }} Комментарий</span>
+                        </p>
 
-<div class="reviews-container">
-    <div class="review-form">
-        <h2>Оставить отзыв</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ review_form.as_p }}
-            <input class="button3" type="submit" value="Отправить">
-        </form>
-    </div>
+                        <h6>Description:</h6>
+                        <p>{{ product.description|linebreaks }}</p>
 
-    <div class="reviews">
-        <h2>Отзывы</h2>
-        {% for review in reviews %}
-        <div class="review">
-            <strong>{{ review.user.username }}</strong>
-            <p>Рейтинг: {{ review.rating }}</p>
-            <p>{{ review.comment }}</p>
-            <p><em>{{ review.created_at }}</em></p>
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                            {% csrf_token %}
+
+                            <!-- Quantity Selection -->
+                            <div class="row pb-3">
+                                <div class="col-auto">
+                                    <ul class="list-inline pb-3">
+                                        <li class="list-inline-item text-right">
+                                            Quantity
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <button type="button" class="btn btn-success" id="btn-minus">-</button>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <span class="badge bg-secondary" id="var-value">1</span>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <button type="button" class="btn btn-success" id="btn-plus">+</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Buttons for Submit -->
+                            <div class="row pb-3">
+                                <div class="col d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg" name="submit" value="buy">Buy
+                                    </button>
+                                </div>
+                                <div class="col d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg" name="submit"
+                                            value="addtocart">Add To Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% empty %}
-        <p>Отзывов пока нет.</p>
-        {% endfor %}
+
+        <!-- Reviews Section in Modal -->
+        <div class="row mt-5">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center">Оставить отзыв</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ review_form.as_p }}
+                            <input class="button3" type="submit" value="Отправить">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="reviews mt-4">
+            <h2>Отзывы</h2>
+            {% for review in reviews %}
+            <div class="review mb-4">
+                <strong>{{ review.user.username }}</strong>
+                <p>Рейтинг: {{ review.rating }}</p>
+                <p>{{ review.comment }}</p>
+                <p><em>{{ review.created_at }}</em></p>
+            </div>
+            {% empty %}
+            <p>Отзывов пока нет.</p>
+            {% endfor %}
+        </div>
     </div>
-</div>
+</section>
+<!-- Close Content -->
+
 {% endblock %}

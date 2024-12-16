@@ -7,9 +7,7 @@ from orders.models import Order
 from .forms import ReviewForm
 
 
-
 def product_detail(request, id, slug):
-
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
     reviews = product.reviews.all()
     review_form = ReviewForm()
@@ -35,17 +33,35 @@ def product_detail(request, id, slug):
         'review_form': review_form
     })
 
+
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
+
+    # Сортировка
+    sort_by = request.GET.get('sort', 'name')  # по умолчанию сортируем по имени (A-Z)
+
+    if sort_by == 'name':
+        products = products.order_by('name')  # Сортировка от A до Я
+    elif sort_by == 'rating':
+        products = products.order_by('-rating')  # Сортировка по оценке (в убывающем порядке)
+
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=category)
+
+        # Получаем все категории (включая подкатегории) для выбранной категории
+        all_categories = Category.objects.filter(parent=category) | Category.objects.filter(id=category.id)
+
+        # Фильтруем товары по категориям
+        products = products.filter(category__in=all_categories)
+
     return render(request,
-                  'product/list.html', {'category': category,
-                                        'categories': categories,
-                                        'products': products})
+                  'product/list.html',
+                  {'category': category,
+                   'categories': categories,
+                   'products': products})
+
 
 class HomePageView(TemplateView):
     template_name = 'index.html'

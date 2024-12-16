@@ -1,44 +1,90 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {% load static %}
-{% block title %}
-{% if category %}{{ category.name }}{% else %}Products{% endif %}
-{% endblock %}
+
 {% block content %}
+<!-- Start Content -->
+<div class="container py-5">
+    <div class="row">
 
-<div id="catalog-container" class="catalog-container">
-    <!-- Левая часть с категориями -->
-    <div class="categories">
-        <h3>Категории</h3>
-        <ul>
-            <li {% if not category %}class="selected" {% endif %}>
-                <a class="asv" href="{% url 'shop:product_list' %}">Все категории</a>
-            </li>
-            {% for c in categories %}
-            <li {% if category.slug == c.slug %}class="selected" {% endif %}>
-                <a class="asv" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- Правая часть с товарами -->
-    <div id="main" class="products">
-        <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
-        <div class="item-container">
-            {% for product in products %}
-            <div class="item">
-                <a href="{{ product.get_absolute_url }}">
-                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}">
-                </a>
-                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-                {{ product.price }} ₽
-            </div>
-            {% if forloop.counter|divisibleby:3 %}
+        <div class="col-lg-3">
+            <h1 class="h2 pb-4">Категории</h1>
+            <ul class="list-unstyled templatemo-accordion">
+                {% for cat in categories %}
+                    {% if not cat.parent %}
+                        <li class="pb-3">
+                            <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="{{ cat.get_absolute_url }}">
+                                {{ cat.name }}
+                                <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+                            </a>
+                            <ul class="collapse show list-unstyled pl-3">
+                                {% for subcat in cat.children.all %}
+                                    <li><a class="text-decoration-none" href="{{ subcat.get_absolute_url }}">{{ subcat.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
         </div>
-        <div class="item-container">
-            {% endif %}
-            {% endfor %}
+
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-md-3 pb-4">
+                    <div class="d-flex">
+                        <form method="get" action="">
+                    <select name="sort" class="form-control" onchange="this.form.submit()">
+                        <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>От А до Я</option>
+                        <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Высокая оценка</option>
+                    </select>
+                </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="main" class="products">
+                    <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
+                    <div class="row">
+                        {% for product in products %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card product-wap rounded-0">
+                                <div class="card rounded-0">
+                                    <img class="card-img rounded-0 img-fluid"
+                                         src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}"
+                                         alt="{{ product.name }}">
+                                    <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                        <ul class="list-unstyled">
+                                            <li><a class="btn btn-success text-white" href="{{ product.get_absolute_url }}"><i
+                                                    class="far fa-eye"></i></a></li>
+                                            <li><a class="btn btn-success text-white mt-2"
+                                                   href="{{ product.get_absolute_url }}"><i class="fas fa-cart-plus"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <a href="{{ product.get_absolute_url }}" class="h3 text-decoration-none">{{ product.name }}</a>
+                                    <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
+                                        <li class="pt-2">
+                                            {% for color in product.colors.all %}
+                                            <span class="product-color-dot color-dot-{{ color.name|lower }} float-left rounded-circle ml-1"></span>
+                                            {% endfor %}
+                                        </li>
+                                    </ul>
+                                    <p class="text-center mb-0">{{ product.price }} ₽</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:3 %}
+                    </div>
+                    <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<!-- End Content -->
 {% endblock %}

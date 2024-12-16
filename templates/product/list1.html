@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+{% block content %}
+
+<div id="catalog-container" class="catalog-container">
+    <!-- Левая часть с категориями -->
+    <div class="categories">
+        <h3>Категории</h3>
+        <ul>
+            <li {% if not category %}class="selected" {% endif %}>
+                <a class="asv" href="{% url 'shop:product_list' %}">Все категории</a>
+            </li>
+            {% for c in categories %}
+            <li {% if category.slug == c.slug %}class="selected" {% endif %}>
+                <a class="asv" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Правая часть с товарами -->
+    <div id="main" class="products">
+        <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
+        <div class="item-container">
+            {% for product in products %}
+            <div class="item">
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}">
+                </a>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                {{ product.price }} ₽
+            </div>
+            {% if forloop.counter|divisibleby:3 %}
+        </div>
+        <div class="item-container">
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

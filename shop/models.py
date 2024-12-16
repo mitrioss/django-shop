@@ -6,6 +6,7 @@ class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200,
                             unique=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
     class Meta:
         ordering = ['name']
@@ -13,8 +14,6 @@ class Category(models.Model):
     indexes = [
         models.Index(fields=['name']),
     ]
-    verbose_name = 'category'
-    verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.name
@@ -23,7 +22,22 @@ class Category(models.Model):
         return reverse('shop:product_list_by_category',
                        args=[self.slug])
 
+    class Meta:
+        verbose_name = 'категория'
+        verbose_name_plural = 'Категории'
+
+class Review(models.Model):
+    product = models.ForeignKey('Product', related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=1, choices=[(i, i) for i in range(1, 6)])
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for {self.product.name} by {self.user.username}"
+
 class Product(models.Model):
+    # Ваши остальные поля
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
@@ -37,21 +51,25 @@ class Product(models.Model):
     class Meta:
         ordering = ['name']
         indexes = [
-            models.Index(fields=['id', 'slug'])
+            models.Index(fields=['id', 'slug']),
+            models.Index(fields=['name']),
+            models.Index(fields=['-created']),
         ]
-
-    indexes = [
-        models.Index(fields=['id', 'slug']),
-        models.Index(fields=['name']),
-        models.Index(fields=['-created']),
-    ]
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('shop:product_detail',
-                       args=[self.id, self.slug])
+        return reverse('shop:product_detail', args=[self.id, self.slug])
+
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews.exists():
+            return sum([review.rating for review in reviews]) / reviews.count()
+        return 0
+
+    def review_count(self):
+        return self.reviews.count()
 
 class Review(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)

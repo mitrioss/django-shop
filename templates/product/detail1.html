@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block content %}
+
+<div class="product">
+    <div class="info-product">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}">
+        <h1><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h1>
+        <h2>{{ product.name }}</h2>
+        {{ product.description|linebreaks }}
+        <p class="price">{{ product.price }} ₽</p>
+        <form action="{% url 'cart:cart_add' product.id %}" method="post">
+            {{ cart_product_form }}
+            {% csrf_token %}
+            <input class="button1" type="submit" value="Добавить в корзину">
+        </form>
+    </div>
+</div>
+
+<div class="reviews-container">
+    <div class="review-form">
+        <h2>Оставить отзыв</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <input class="button3" type="submit" value="Отправить">
+        </form>
+    </div>
+
+    <div class="reviews">
+        <h2>Отзывы</h2>
+        {% for review in reviews %}
+        <div class="review">
+            <strong>{{ review.user.username }}</strong>
+            <p>Рейтинг: {{ review.rating }}</p>
+            <p>{{ review.comment }}</p>
+            <p><em>{{ review.created_at }}</em></p>
+        </div>
+        {% empty %}
+        <p>Отзывов пока нет.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
