@@ -48,7 +48,7 @@ def product_list(request, category_slug=None):
                                         'products': products})
 
 class HomePageView(TemplateView):
-    template_name = 'home.html'
+    template_name = 'index.html'
 
 
 class CustomersListView(ListView):
