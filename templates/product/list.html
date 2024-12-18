@@ -11,19 +11,21 @@
             <h1 class="h2 pb-4">Категории</h1>
             <ul class="list-unstyled templatemo-accordion">
                 {% for cat in categories %}
-                    {% if not cat.parent %}
-                        <li class="pb-3">
-                            <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="{{ cat.get_absolute_url }}">
-                                {{ cat.name }}
-                                <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
-                            </a>
-                            <ul class="collapse show list-unstyled pl-3">
-                                {% for subcat in cat.children.all %}
-                                    <li><a class="text-decoration-none" href="{{ subcat.get_absolute_url }}">{{ subcat.name }}</a></li>
-                                {% endfor %}
-                            </ul>
+                {% if not cat.parent %}
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none"
+                       href="{{ cat.get_absolute_url }}">
+                        {{ cat.name }}
+                        <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul class="collapse show list-unstyled pl-3">
+                        {% for subcat in cat.children.all %}
+                        <li><a class="text-decoration-none" href="{{ subcat.get_absolute_url }}">{{ subcat.name }}</a>
                         </li>
-                    {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
                 {% endfor %}
             </ul>
         </div>
@@ -33,11 +35,11 @@
                 <div class="col-md-3 pb-4">
                     <div class="d-flex">
                         <form method="get" action="">
-                    <select name="sort" class="form-control" onchange="this.form.submit()">
-                        <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>От А до Я</option>
-                        <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Высокая оценка</option>
-                    </select>
-                </form>
+                            <select name="sort" class="form-control" onchange="this.form.submit()">
+    <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>От А до Я</option>
+    <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Высокая оценка</option>
+</select>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -55,10 +57,19 @@
                                          alt="{{ product.name }}">
                                     <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                         <ul class="list-unstyled">
-                                            <li><a class="btn btn-success text-white" href="{{ product.get_absolute_url }}"><i
+                                            <li><a class="btn btn-success text-white"
+                                                   href="{{ product.get_absolute_url }}"><i
                                                     class="far fa-eye"></i></a></li>
-                                            <li><a class="btn btn-success text-white mt-2"
-                                                   href="{{ product.get_absolute_url }}"><i class="fas fa-cart-plus"></i></a></li>
+                                            <li>
+                                                <form method="post" action="{% url 'cart:cart_add' product.id %}">
+    {% csrf_token %}
+    <!-- Скрытое поле для количества -->
+    <input type="hidden" name="quantity" value="1">
+    <a class="btn btn-success text-white mt-2" href="javascript:void(0);" onclick="this.closest('form').submit();">
+        <i class="fas fa-cart-plus"></i>
+    </a>
+</form>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -86,5 +97,41 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+        addToCartButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                const productId = button.getAttribute('data-product-id');
+                const quantity = 1;  // Это может быть изменено на основе значения в форме, если нужно
+
+                fetch(`/cart/add/${productId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'  // Добавляем токен CSRF для безопасности
+                    },
+                    body: JSON.stringify({
+                        quantity: quantity,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.total_quantity !== undefined) {
+                        // Обновляем количество товаров в корзине
+                        document.querySelector('#cart-quantity').textContent = data.total_quantity;
+                        document.querySelector('#cart-price').textContent = data.total_price + ' ₽';
+                    } else {
+                        console.log('Ошибка при добавлении товара в корзину');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                });
+            });
+        });
+    });
+</script>
 <!-- End Content -->
 {% endblock %}
