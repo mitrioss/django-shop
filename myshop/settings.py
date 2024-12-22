@@ -81,7 +81,8 @@ INSTALLED_APPS = [
     'cart',
     'orders',
     'payment',
-    'django_bootstrap5'
+    'django_bootstrap5',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [

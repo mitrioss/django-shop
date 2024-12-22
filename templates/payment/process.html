@@ -2,33 +2,39 @@
 {% load static %}
 {% block title %}Pay your order{% endblock %}
 {% block content %}
-<h1>Описание заказа</h1>
-<table class="cart">
-    <thead>
-    <tr>
-        <th>Товар</th>
-        <th>Цена за единицу</th>
-        <th>Количество</th>
-        <th>Цена</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for item in order.items.all %}
-    <tr class="row{% cycle '1' '2' %}">
-        <td>{{ item.product.name }}</td>
-        <td class="num">${{ item.price }}</td>
-        <td class="num">{{ item.quantity }}</td>
-        <td class="num">${{ item.get_cost }}</td>
-    </tr>
-    {% endfor %}
-    <tr class="total">
-        <td colspan="4">Total</td>
-        <td class="num">${{ order.get_total_cost }}</td>
-    </tr>
-    </tbody>
-</table>
-<form action="{% url 'payment:process' %}" method="post">
-    <input class="button2" type="submit" value="Оплатить" style="margin-top:15px;">
-    {% csrf_token %}
-</form>
+<!-- Start Order Description -->
+<section class="container py-5">
+    <h1 class="text-center">Описание заказа</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered cart">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Цена за единицу</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr class="row{% cycle '1' '2' %}">
+                    <td>{{ item.product.name }}</td>
+                    <td class="num">${{ item.price }}</td>
+                    <td class="num">{{ item.quantity }}</td>
+                    <td class="num">${{ item.get_cost }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td colspan="3" class="text-end"><strong>Итого</strong></td>
+                    <td class="num">${{ order.get_total_cost }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <form action="{% url 'payment:process' %}" method="post" class="text-center">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success btn-lg" style="margin-top: 15px;">Оплатить</button>
+    </form>
+</section>
+<!-- End Order Description -->
 {% endblock %}

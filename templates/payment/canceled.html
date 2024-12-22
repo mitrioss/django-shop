@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Payment canceled{% endblock %}
 {% block content %}
-<h1>Ваш платеж не был обработан</h1>
-<p>Возникла проблема с обработкой вашего платежа.</p>
+<!-- Start Payment Canceled Section -->
+<section class="container py-5 text-center">
+    <h1 class="display-4 text-danger">Ваш платеж не был обработан</h1>
+    <p class="lead">Возникла проблема с обработкой вашего платежа. Пожалуйста, попробуйте еще раз или свяжитесь с нами для помощи.</p>
+    <p>Вы можете вернуться на главную страницу или попробовать снова.</p>
+    <a href="{% url 'shop:index' %}" class="btn btn-danger btn-lg mt-5">На главную</a>
+    <a href="{% url 'payment:canceled' %}" class="btn btn-warning btn-lg mt-5">Попробовать снова</a>
+</section>
+<!-- End Payment Canceled Section -->
 {% endblock %}

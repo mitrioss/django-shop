@@ -11,12 +11,10 @@
     <div class="container pb-5">
         <div class="row">
             <!-- Product Image -->
-            <div class="col-lg-5 mt-5">
-                <div class="card mb-3">
-                    <img class="card-img img-fluid"
-                         src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}"
-                         alt="{{ product.name }}" id="product-detail">
-                </div>
+            <div class="col-lg-4 mt-5">
+                <img class="card-img img-fluid"
+                src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'no_image.png' %}{% endif %}"
+                alt="{{ product.name }}" id="product-detail" style="max-width: 450px; max-height: 450px;">
             </div>
 
             <!-- Product Details -->

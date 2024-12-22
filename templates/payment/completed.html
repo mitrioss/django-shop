@@ -1,6 +1,12 @@
-{% extends "../home.html" %}
+{% extends "base.html" %}
 {% block title %}Payment successful{% endblock %}
 {% block content %}
-<h1>Ваш платеж прошел успешно</h1>
-<p>Ваш платеж был успешно обработан.</p>
+<!-- Start Payment Success Section -->
+<section class="container py-5 text-center">
+    <h1 class="display-4 text-success">Ваш платеж прошел успешно!</h1>
+    <p class="lead">Ваш платеж был успешно обработан. Спасибо за покупку!</p>
+    <p>Вы можете вернуться на главную страницу или просмотреть свои заказы.</p>
+    <a href="{% url 'shop:index' %}" class="btn btn-success btn-lg mt-5">На главную</a>
+</section>
+<!-- End Payment Success Section -->
 {% endblock %}

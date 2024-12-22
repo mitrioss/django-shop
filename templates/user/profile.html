@@ -1,23 +1,37 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+Профиль
+{% endblock %}
+
 {% block content %}
-<div class="profile-container">
-    <div class="profile">
-        <div class="info-profile">
-            <h1>Профиль</h1>
-            <p>Привет, {{ user.username }}!</p>
+<!-- Start Profile Section -->
+<section class="container py-5">
+    <div class="row text-center pt-3">
+        <div class="col-lg-6 m-auto">
+            <h1 class="h1">Профиль</h1>
+            <p>Привет, {{ user.username }}! Добро пожаловать в ваш профиль.</p>
             <p>Дата регистрации: {{ user.date_joined }}</p>
-            <div class="form-container">
-                <!-- Форма для смены логина -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card p-4 mb-4">
+                <h3 class="h4">Сменить логин</h3>
                 <form method="post" action="{% url 'user:change_username' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_username">Новый логин:</label>
                         <input type="text" name="username" id="id_username" class="form-control" required>
                     </div>
-                    <button type="submit" class="button1">Сменить логин</button>
+                    <button type="submit" class="btn btn-success btn-lg mt-3">Сменить логин</button>
                 </form>
+            </div>
 
-                <!-- Форма для смены пароля -->
+            <div class="card p-4 mb-4">
+                <h3 class="h4">Сменить пароль</h3>
                 <form method="post" action="{% url 'user:change_password' %}">
                     {% csrf_token %}
                     <div class="form-group">
@@ -32,10 +46,11 @@
                         <label for="id_new_password2">Подтвердите новый пароль:</label>
                         <input type="password" name="new_password2" id="id_new_password2" class="form-control" required>
                     </div>
-                    <button type="submit" class="button2">Сменить пароль</button>
+                    <button type="submit" class="btn btn-success btn-lg mt-3">Сменить пароль</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
+</section>
+<!-- End Profile Section -->
 {% endblock %}

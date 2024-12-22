@@ -1,36 +1,38 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Авторизация</title>
-    <link rel="stylesheet" href="{% static 'css/reg.css' %}">
-    <link rel="icon" href="{% static 'logo.jpg' %}" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet">
-</head>
+{% load widget_tweaks %}
+{% block title %}
+Авторизация
+{% endblock %}
 
 {% block content %}
-
-<body>
-<div class="container">
-    <h1 class="texth1">Авторизация</h1>
-    <form method="post">
-        <div>
-            {% csrf_token %}
-            <label for="{{ form.username.id_for_label }}" class='name'>Логин:</label>
-            {{ form.username }}
-            <label for="{{ form.password.id_for_label }}" class="password ">Пароль:</label>
-            {{ form.password }}
+<div class="container py-5">
+    <div class="row text-center">
+        <div class="col-lg-6 m-auto">
+            <h1 class="h1">Авторизация</h1>
+            <p>
+                Войдите в свой аккаунт, чтобы продолжить покупки и пользоваться всеми функциями нашего магазина!
+            </p>
         </div>
-        <button class="button1" type="submit" style='margin-top: 25px'>Войти</button>
-    </form>
-    <div class="btn">
-        <a id="login-button" class="button2" href="{% url 'shop:index' %}" type="submit">Вернуться назад</a>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 m-auto">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">Логин:</label>
+                    {{ form.username|add_class:"form-control" }}
+                </div>
+                <div class="form-group mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">Пароль:</label>
+                    {{ form.password|add_class:"form-control" }}
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success btn-lg w-50 me-1">Войти</button>
+                    <a href="{% url 'shop:index' %}" class="btn btn-secondary btn-lg w-50 ms-1">Вернуться назад</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-</body>
 {% endblock %}
-</html>

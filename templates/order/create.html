@@ -1,23 +1,66 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+
 {% block title %}
 Checkout
 {% endblock %}
+
 {% block content %}
-<h3>Ваш заказ</h3>
-<div class="order-info">
-    <ul>
-        {% for item in cart %}
-        <li>
-            {{ item.quantity }} {{ item.product.name }}
-            <span>{{ item.total_price }} ₽</span>
-        </li>
-        {% endfor %}
-    </ul>
-    <p>Сумма: {{ cart.get_total_price }} ₽</p>
+<div class="container py-5">
+    <div class="row text-center pt-3">
+        <div class="col-lg-6 m-auto">
+            <h1 class="h1">Ваш заказ</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for item in cart %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ item.quantity }} x {{ item.product.name }}</span>
+                            <span>{{ item.total_price }} ₽</span>
+                        </li>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Итого:</strong>
+                            <strong>{{ cart.get_total_price }} ₽</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <form method="post" class="p-3">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label_tag }}
+                    {{ form.email|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.address.label_tag }}
+                    {{ form.address|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.postal_code.label_tag }}
+                    {{ form.postal_code|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.city.label_tag }}
+                    {{ form.city|add_class:"form-control" }}
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success btn-lg">Заказать</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<form method="post" class="order-form">
-    {{ form.as_p }}
-    <p><input class="button2" type="submit" value="Заказать"></p>
-    {% csrf_token %}
-</form>
 {% endblock %}
