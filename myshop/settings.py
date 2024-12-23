@@ -122,9 +122,9 @@ WSGI_APPLICATION = 'myshop.wsgi.application'
 """DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'myshopdb',
-        'USER': 'shopadmin',
-        'PASSWORD': 'djangopasswd',
+        'NAME': 'mitshop',
+        'USER': 'root',
+        'PASSWORD': '1144',
         'HOST': 'localhost',
         'PORT': '3306',
     }

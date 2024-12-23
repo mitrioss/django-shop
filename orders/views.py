@@ -1,3 +1,4 @@
+from django.core.checks import messages
 from django.urls import reverse
 from .models import OrderItem, Order
 from .forms import OrderCreateForm
@@ -8,6 +9,11 @@ from django.shortcuts import render, redirect
 
 def order_create(request):
     cart = Cart(request)
+
+    if not cart:  # Проверка, если корзина пуста
+        messages.Error(request, "Ваша корзина пуста")
+        return redirect('cart:cart_detail')
+
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
